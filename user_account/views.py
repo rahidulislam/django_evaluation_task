@@ -30,6 +30,7 @@ class UserDetailUpdateDeleteAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = UserDetailUpdateSerializer
     permission_classes = [permissions.IsAuthenticated]
+    http_method_names = ["get", "patch", "delete"]
 
     def get_object(self):
         return get_object_or_404(User, pk=self.kwargs.get("pk"))
