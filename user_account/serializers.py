@@ -47,3 +47,7 @@ class UserSerializer(serializers.ModelSerializer):
         data["access"] = str(access)
         data["refresh"] = str(refresh)
         return data
+class UserListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["id", "email", "first_name", "last_name"]
