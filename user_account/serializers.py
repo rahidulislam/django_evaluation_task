@@ -11,7 +11,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token["email"] = user.email
 
         return token
-    
+
     def validate(self, attrs):
         token_data = super().validate(attrs)
         data = {
@@ -25,10 +25,17 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         return data
 
+
 class UserSerializerBase(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "email", "first_name", "last_name",]
+        fields = [
+            "id",
+            "email",
+            "first_name",
+            "last_name",
+        ]
+
 
 class UserRegisterSerializer(UserSerializerBase):
     class Meta(UserSerializerBase.Meta):
@@ -41,7 +48,7 @@ class UserRegisterSerializer(UserSerializerBase):
         user.set_password(password)
         user.save()
         return user
-    
+
     def to_representation(self, instance):
         data = super().to_representation(instance)
         refresh = MyTokenObtainPairSerializer.get_token(instance)
@@ -49,14 +56,18 @@ class UserRegisterSerializer(UserSerializerBase):
         data["access"] = str(access)
         data["refresh"] = str(refresh)
         return data
-        
+
+
+class UserListSerializer(UserSerializerBase):
+    class Meta(UserSerializerBase.Meta):
+        fields = UserSerializerBase.Meta.fields + ["is_active", "date_joined"]
+
 
 class UserDetailUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "first_name", "last_name", "password"]
         extra_kwargs = {"password": {"write_only": True}}
-
 
     def update(self, instance, validated_data):
         password = validated_data.pop("password", None)
@@ -72,9 +83,6 @@ class UserDetailUpdateSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        data['is_active'] = instance.is_active
-        data['date_joined'] = instance.date_joined
+        data["is_active"] = instance.is_active
+        data["date_joined"] = instance.date_joined
         return data
-class UserListSerializer(UserSerializerBase):
-    class Meta(UserSerializerBase.Meta):
-        fields = UserSerializerBase.Meta.fields + ['is_active','date_joined']
