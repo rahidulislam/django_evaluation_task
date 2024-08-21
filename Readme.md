@@ -24,8 +24,12 @@ pip install -r requirements.txt
 ```python
 python manage.py createsuperuser
 ```
-
-## Step 3 - Run server
+## Step 3 - Make migrations
+```python
+python manage.py makemigrations
+python manage.py migrate
+```
+## Step 4 - Run server
 
 ```python
 python manage.py runserver
